@@ -1,0 +1,89 @@
+#include <stdio.h>
+
+// Função auxiliar para mesclar duas sub-arrays ordenadas
+void merge(int arr[], int l, int m, int r) {
+  int i, j, k;
+  int n1 = m - l + 1;
+  int n2 = r - m;
+
+  // Cria arrays temporárias
+  int L[n1], R[n2];
+
+  // Copia os dados para os arrays temporárias
+  for (i = 0; i < n1; i++) {
+    L[i] = arr[l + i];
+  }
+  for (j = 0; j < n2; j++) {
+    R[j] = arr[m + 1 + j];
+  }
+
+  // Mescla as arrays temporárias de volta para o array original
+  i = 0;
+  j = 0;
+  k = l;
+  while (i < n1 && j < n2) {
+    if (L[i] <= R[j]) {
+      arr[k] = L[i];
+      i++;
+    } else {
+      arr[k] = R[j];
+      j++;
+    }
+    k++;
+  }
+
+  // Copia os elementos restantes da array L, se houver
+  while (i < n1) {
+    arr[k] = L[i];
+    i++;
+    k++;
+  }
+
+  // Copia os elementos restantes da array R, se houver
+  while (j < n2) {
+    arr[k] = R[j];
+    j++;
+    k++;
+  }
+}
+
+// Função para ordenar um array usando o algoritmo Merge Sort
+void mergeSort(int arr[], int l, int r) {
+  if (l < r) {
+    // Encontra o ponto médio do array
+    int m = l + (r - l) / 2;
+
+    // Ordena recursivamente as duas metades do array
+    mergeSort(arr, l, m);
+    mergeSort(arr, m + 1, r);
+
+    // Mescla as duas metades ordenadas
+    merge(arr, l, m, r);
+  }
+}
+
+int main() {
+  // Array de inteiros não ordenado
+  int arr[] = {12, 11, 13, 5, 6, 7};
+  // Tamanho do array
+  int n = sizeof(arr) / sizeof(arr[0]);
+
+  printf("Array original: \n");
+  // Imprime o array original
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  // Ordena o array usando o Merge Sort
+  mergeSort(arr, 0, n - 1);
+
+  printf("Array ordenado: \n");
+  // Imprime o array ordenado
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  return 0;
+}
