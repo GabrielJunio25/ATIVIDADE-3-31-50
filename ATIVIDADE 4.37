@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_SIZE 100
+
+// Estrutura para representar a fila
+struct Queue {
+  int items[MAX_SIZE];
+  int front;
+  int rear;
+};
+
+// Função para inicializar a fila
+void initialize(struct Queue *queue) {
+  queue->front = -1;
+  queue->rear = -1;
+}
+
+// Função para verificar se a fila está vazia
+int isEmpty(struct Queue *queue) {
+  return queue->front == -1;
+}
+
+// Função para verificar se a fila está cheia
+int isFull(struct Queue *queue) {
+  return (queue->rear + 1) % MAX_SIZE == queue->front;
+}
+
+// Função para enfileirar um elemento
+void enqueue(struct Queue *queue, int item) {
+  if (isFull(queue)) {
+    printf("A fila está cheia!\n");
+    return;
+  }
+  if (isEmpty(queue)) {
+    queue->front = 0;
+  }
+  queue->rear = (queue->rear + 1) % MAX_SIZE;
+  queue->items[queue->rear] = item;
+}
+
+// Função para desenfileirar um elemento
+int dequeue(struct Queue *queue) {
+  if (isEmpty(queue)) {
+    printf("A fila está vazia!\n");
+    return -1; // Retorna -1 para indicar um erro
+  }
+  int item = queue->items[queue->front];
+  if (queue->front == queue->rear) {
+    // Se houver apenas um elemento na fila
+    queue->front = -1;
+    queue->rear = -1;
+  } else {
+    queue->front = (queue->front + 1) % MAX_SIZE;
+  }
+  return item;
+}
+
+// Função para visualizar o elemento no início da fila
+int peek(struct Queue *queue) {
+  if (isEmpty(queue)) {
+    printf("A fila está vazia!\n");
+    return -1; // Retorna -1 para indicar um erro
+  }
+  return queue->items[queue->front];
+}
+
+int main() {
+  // Cria uma fila
+  struct Queue queue;
+  initialize(&queue);
+
+  // Enfileira alguns elementos
+  enqueue(&queue, 10);
+  enqueue(&queue, 20);
+  enqueue(&queue, 30);
+
+  // Desenfileira e exibe os elementos
+  printf("Desenfileirando: %d\n", dequeue(&queue));
+  printf("Desenfileirando: %d\n", dequeue(&queue));
+  printf("O elemento no início da fila é: %d\n", peek(&queue));
+
+  return 0;
+}
