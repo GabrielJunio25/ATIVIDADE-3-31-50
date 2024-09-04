@@ -1,0 +1,45 @@
+#include <stdio.h>
+
+// Função para ordenar um array usando o algoritmo Bubble Sort
+void bubbleSort(int arr[], int n) {
+  int i, j;
+  // Itera sobre o array n-1 vezes
+  for (i = 0; i < n - 1; i++) {
+    // Itera sobre o array, comparando elementos adjacentes
+    for (j = 0; j < n - i - 1; j++) {
+      // Se o elemento atual for maior que o próximo, troca-os
+      if (arr[j] > arr[j + 1]) {
+        // Troca os elementos arr[j] e arr[j+1]
+        int temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+}
+
+int main() {
+  // Array de inteiros não ordenado
+  int arr[] = {64, 34, 25, 12, 22, 11, 90};
+  // Tamanho do array
+  int n = sizeof(arr) / sizeof(arr[0]);
+
+  printf("Array original: \n");
+  // Imprime o array original
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  // Ordena o array usando o Bubble Sort
+  bubbleSort(arr, n);
+
+  printf("Array ordenado: \n");
+  // Imprime o array ordenado
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  return 0;
+}
