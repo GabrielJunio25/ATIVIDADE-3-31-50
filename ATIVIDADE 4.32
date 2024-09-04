@@ -1,0 +1,52 @@
+#include <stdio.h>
+
+// Função para ordenar um array usando o algoritmo Selection Sort
+void selectionSort(int arr[], int n) {
+  int i, j, min_idx;
+
+  // Itera sobre o array, exceto o último elemento
+  for (i = 0; i < n - 1; i++) {
+    // Assume que o elemento atual é o menor
+    min_idx = i;
+
+    // Encontra o índice do menor elemento na sub-array não ordenada
+    for (j = i + 1; j < n; j++) {
+      if (arr[j] < arr[min_idx]) {
+        min_idx = j;
+      }
+    }
+
+    // Troca o elemento atual com o menor elemento encontrado
+    if (min_idx != i) {
+      int temp = arr[i];
+      arr[i] = arr[min_idx];
+      arr[min_idx] = temp;
+    }
+  }
+}
+
+int main() {
+  // Array de inteiros não ordenado
+  int arr[] = {64, 25, 12, 22, 11};
+  // Tamanho do array
+  int n = sizeof(arr) / sizeof(arr[0]);
+
+  printf("Array original: \n");
+  // Imprime o array original
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  // Ordena o array usando o Selection Sort
+  selectionSort(arr, n);
+
+  printf("Array ordenado: \n");
+  // Imprime o array ordenado
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  return 0;
+}
