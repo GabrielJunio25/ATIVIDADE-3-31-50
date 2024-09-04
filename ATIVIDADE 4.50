@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <string.h>
+
+// Função para comprimir um texto usando RLE
+void compressRLE(char *text, char *compressedText) {
+  int textLength = strlen(text);
+  int compressedIndex = 0;
+  int count = 1;
+
+  // Itera sobre o texto
+  for (int i = 1; i <= textLength; i++) {
+    // Se o caractere atual for igual ao anterior, incrementa a contagem
+    if (i < textLength && text[i] == text[i - 1]) {
+      count++;
+    } else {
+      // Se o caractere atual for diferente do anterior,
+      // adiciona o caractere anterior e sua contagem ao texto comprimido
+      compressedText[compressedIndex++] = text[i - 1];
+      if (count > 1) {
+        compressedText[compressedIndex++] = count + '0';
+      }
+      count = 1; // Reinicia a contagem
+    }
+  }
+
+  compressedText[compressedIndex] = '\0'; // Adiciona o caractere nulo no final
+}
+
+// Função para descomprimir um texto comprimido usando RLE
+void decompressRLE(char *compressedText, char *decompressedText) {
+  int compressedLength = strlen(compressedText);
+  int decompressedIndex = 0;
+  int count = 1;
+
+  // Itera sobre o texto comprimido
+  for (int i = 0; i < compressedLength; i++) {
+    // Se o caractere atual for um dígito,
+    // converte-o para inteiro e usa-o como a contagem de repetições
+    if (compressedText[i] >= '0' && compressedText[i] <= '9') {
+      count = compressedText[i] - '0';
+    } else {
+      // Se o caractere atual for um caractere,
+      // adiciona-o ao texto descomprimido a contagem de vezes
+      for (int j = 0; j < count; j++) {
+        decompressedText[decompressedIndex++] = compressedText[i];
+      }
+      count = 1; // Reinicia a contagem
+    }
+  }
+
+  decompressedText[decompressedIndex] = '\0'; // Adiciona o caractere nulo no final
+}
+
+int main() {
+  char text[MAX_TEXT_LENGTH];
+  char compressedText[MAX_TEXT_LENGTH];
+  char decompressedText[MAX_TEXT_LENGTH];
+
+  printf("Digite o texto: ");
+  fgets(text, MAX_TEXT_LENGTH, stdin);
+  text[strcspn(text, "\n")] = 0; // Remove o caractere de nova linha
+
+  compressRLE(text, compressedText);
+
+  printf("Texto comprimido: %s\n", compressedText);
+
+  decompressRLE(compressedText, decompressedText);
+
+  printf("Texto descomprimido: %s\n", decompressedText);
+
+  return 0;
+}
