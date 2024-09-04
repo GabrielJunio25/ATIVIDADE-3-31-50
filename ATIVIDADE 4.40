@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define SIZE 3
+
+// Função para inicializar o tabuleiro do jogo
+void initializeBoard(char board[SIZE][SIZE]) {
+  for (int i = 0; i < SIZE; i++) {
+    for (int j = 0; j < SIZE; j++) {
+      board[i][j] = ' ';
+    }
+  }
+}
+
+// Função para imprimir o tabuleiro do jogo
+void printBoard(char board[SIZE][SIZE]) {
+  printf("--------- \n");
+  for (int i = 0; i < SIZE; i++) {
+    printf("| %c | %c | %c |\n", board[i][0], board[i][1], board[i][2]);
+    printf("--------- \n");
+  }
+}
+
+// Função para verificar se uma posição no tabuleiro está vazia
+bool isEmpty(char board[SIZE][SIZE], int row, int col) {
+  return board[row][col] == ' ';
+}
+
+// Função para fazer uma jogada no tabuleiro
+void makeMove(char board[SIZE][SIZE], int row, int col, char player) {
+  if (isEmpty(board, row, col)) {
+    board[row][col] = player;
+  } else {
+    printf("Posição inválida. Tente novamente.\n");
+  }
+}
+
+// Função para verificar se um jogador ganhou
+bool checkWin(char board[SIZE][SIZE], char player) {
+  // Verifica linhas
+  for (int i = 0; i < SIZE; i++) {
+    if (board[i][0] == player && board[i][1] == player && board[i][2] == player) {
+      return true;
+    }
+  }
+
+  // Verifica colunas
+  for (int j = 0; j < SIZE; j++) {
+    if (board[0][j] == player && board[1][j] == player && board[2][j] == player) {
+      return true;
+    }
+  }
+
+  // Verifica diagonais
+  if ((board[0][0] == player && board[1][1] == player && board[2][2] == player) ||
+      (board[0][2] == player && board[1][1] == player && board[2][0] == player)) {
+    return true;
+  }
+
+  return false;
+}
+
+// Função para verificar se o tabuleiro está cheio
+bool isBoardFull(char board[SIZE][SIZE]) {
+  for (int i = 0; i < SIZE; i++) {
+    for (int j = 0; j < SIZE; j++) {
+      if (isEmpty(board, i, j)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+int main() {
+  char board[SIZE][SIZE];
+  char currentPlayer = 'X';
+  bool gameOver = false;
+
+  // Inicializa o tabuleiro
+  initializeBoard(board);
+
+  // Loop do jogo
+  while (!gameOver) {
+    // Imprime o tabuleiro
+    printBoard(board);
+
+    // Pede ao jogador para fazer uma jogada
+    int row, col;
+    printf("Jogador %c, digite a linha (0-2) e a coluna (0-2): ", currentPlayer);
+    scanf("%d %d", &row, &col);
+
+    // Faz a jogada
+    makeMove(board, row, col, currentPlayer);
+
+    // Verifica se o jogador ganhou
+    if (checkWin(board, currentPlayer)) {
+      printf("Jogador %c venceu!\n", currentPlayer);
+      gameOver = true;
+    } else if (isBoardFull(board)) {
+      printf("Empate!\n");
+      gameOver = true;
+    } else {
+      // Muda o jogador
+      currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+  }
+
+  // Imprime o tabuleiro final
+  printBoard(board);
+
+  return 0;
+}
