@@ -1,0 +1,67 @@
+#include <stdio.h>
+
+// Função auxiliar para trocar dois elementos em um array
+void swap(int *a, int *b) {
+  int temp = *a;
+  *a = *b;
+  *b = temp;
+}
+
+// Função para particionar o array em torno de um pivô
+int partition(int arr[], int low, int high) {
+  // Escolhe o último elemento como pivô
+  int pivot = arr[high];
+  int i = (low - 1);
+
+  // Itera sobre o array, comparando cada elemento com o pivô
+  for (int j = low; j <= high - 1; j++) {
+    if (arr[j] < pivot) {
+      // Se o elemento atual for menor que o pivô, incrementa 'i'
+      i++;
+      // Troca o elemento atual com o elemento na posição 'i'
+      swap(&arr[i], &arr[j]);
+    }
+  }
+  // Troca o pivô com o elemento na posição 'i+1'
+  swap(&arr[i + 1], &arr[high]);
+  // Retorna a posição do pivô
+  return (i + 1);
+}
+
+// Função para ordenar um array usando o algoritmo Quick Sort
+void quickSort(int arr[], int low, int high) {
+  if (low < high) {
+    // Encontra a posição do pivô após o particionamento
+    int pi = partition(arr, low, high);
+
+    // Ordena recursivamente as sub-arrays antes e depois do pivô
+    quickSort(arr, low, pi - 1);
+    quickSort(arr, pi + 1, high);
+  }
+}
+
+int main() {
+  // Array de inteiros não ordenado
+  int arr[] = {10, 7, 8, 9, 1, 5};
+  // Tamanho do array
+  int n = sizeof(arr) / sizeof(arr[0]);
+
+  printf("Array original: \n");
+  // Imprime o array original
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  // Ordena o array usando o Quick Sort
+  quickSort(arr, 0, n - 1);
+
+  printf("Array ordenado: \n");
+  // Imprime o array ordenado
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  return 0;
+}
