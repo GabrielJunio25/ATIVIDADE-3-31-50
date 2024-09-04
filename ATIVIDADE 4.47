@@ -1,0 +1,143 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_VERTICES 100
+#define MAX_EDGES 100
+
+// Estrutura para representar uma aresta
+struct Edge {
+  int source;
+  int destination;
+  int weight;
+};
+
+// Estrutura para representar o grafo
+struct Graph {
+  int numVertices;
+  struct Edge edges[MAX_EDGES];
+  int numEdges;
+};
+
+// Estrutura para representar o conjunto disjunto
+struct DisjointSet {
+  int parent[MAX_VERTICES];
+  int rank[MAX_VERTICES];
+};
+
+// Função para inicializar o conjunto disjunto
+void initializeDisjointSet(struct DisjointSet *ds, int numVertices) {
+  for (int i = 0; i < numVertices; i++) {
+    ds->parent[i] = i;
+    ds->rank[i] = 0;
+  }
+}
+
+// Função para encontrar o pai de um vértice
+int find(struct DisjointSet *ds, int vertex) {
+  if (ds->parent[vertex] != vertex) {
+    ds->parent[vertex] = find(ds, ds->parent[vertex]);
+  }
+  return ds->parent[vertex];
+}
+
+// Função para unir dois conjuntos
+void unionSets(struct DisjointSet *ds, int vertex1, int vertex2) {
+  int root1 = find(ds, vertex1);
+  int root2 = find(ds, vertex2);
+
+  if (ds->rank[root1] < ds->rank[root2]) {
+    ds->parent[root1] = root2;
+  } else if (ds->rank[root1] > ds->rank[root2]) {
+    ds->parent[root2] = root1;
+  } else {
+    ds->parent[root1] = root2;
+    ds->rank[root2]++;
+  }
+}
+
+// Função para comparar arestas (para ordenação)
+int compareEdges(const void *a, const void *b) {
+  struct Edge *edge1 = (struct Edge *)a;
+  struct Edge *edge2 = (struct Edge *)b;
+  return edge1->weight - edge2->weight;
+}
+
+// Função para encontrar a árvore geradora mínima usando o algoritmo de Kruskal
+void kruskalMST(struct Graph *graph) {
+  // Ordena as arestas por peso
+  qsort(graph->edges, graph->numEdges, sizeof(struct Edge), compareEdges);
+
+  // Inicializa o conjunto disjunto
+  struct DisjointSet ds;
+  initializeDisjointSet(&ds, graph->numVertices);
+
+  // Cria um array para armazenar as arestas da árvore geradora mínima
+  struct Edge mstEdges[MAX_VERTICES - 1];
+  int mstEdgeCount = 0;
+
+  // Itera sobre as arestas ordenadas
+  for (int i = 0; i < graph->numEdges; i++) {
+    // Encontra os pais dos vértices de origem e destino
+    int sourceParent = find(&ds, graph->edges[i].source);
+    int destParent = find(&ds, graph->edges[i].destination);
+
+    // Se os pais forem diferentes, a aresta não forma um ciclo
+    if (sourceParent != destParent) {
+      // Adiciona a aresta à árvore geradora mínima
+      mstEdges[mstEdgeCount++] = graph->edges[i];
+      // Une os conjuntos dos vértices
+      unionSets(&ds, sourceParent, destParent);
+    }
+  }
+
+  // Imprime as arestas da árvore geradora mínima
+  printf("Árvore geradora mínima:\n");
+  for (int i = 0; i < mstEdgeCount; i++) {
+    printf("%d -- %d (peso: %d)\n", mstEdges[i].source, mstEdges[i].destination, mstEdges[i].weight);
+  }
+}
+
+int main() {
+  // Cria um grafo com 5 vértices
+  struct Graph graph;
+  graph.numVertices = 5;
+  graph.numEdges = 8;
+
+  // Adiciona as arestas ao grafo
+  graph.edges[0].source = 0;
+  graph.edges[0].destination = 1;
+  graph.edges[0].weight = 2;
+
+  graph.edges[1].source = 0;
+  graph.edges[1].destination = 3;
+  graph.edges[1].weight = 6;
+
+  graph.edges[2].source = 1;
+  graph.edges[2].destination = 2;
+  graph.edges[2].weight = 3;
+
+  graph.edges[3].source = 1;
+  graph.edges[3].destination = 3;
+  graph.edges[3].weight = 8;
+
+  graph.edges[4].source = 1;
+  graph.edges[4].destination = 4;
+  graph.edges[4].weight = 5;
+
+  graph.edges[5].source = 2;
+  graph.edges[5].destination = 4;
+  graph.edges[5].weight = 7;
+
+  graph.edges[6].source = 3;
+  graph.edges[6].destination = 4;
+  graph.edges[6].weight = 9;
+
+  graph.edges[7].source = 3;
+  graph.edges[7].destination = 2;
+  graph.edges[7].weight = 4;
+
+  // Encontra a árvore geradora mínima
+  kruskalMST(&graph);
+
+  return 0;
+}
