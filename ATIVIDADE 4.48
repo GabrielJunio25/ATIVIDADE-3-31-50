@@ -1,0 +1,121 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h> // Para a função sleep
+
+#define NUM_FLOORS 10
+#define ELEVATOR_CAPACITY 10
+
+// Estrutura para representar o elevador
+struct Elevator {
+  int currentFloor;
+  int destinationFloor;
+  bool isMoving;
+  int passengers[ELEVATOR_CAPACITY];
+  int numPassengers;
+};
+
+// Função para inicializar o elevador
+void initializeElevator(struct Elevator *elevator) {
+  elevator->currentFloor = 1;
+  elevator->destinationFloor = 1;
+  elevator->isMoving = false;
+  elevator->numPassengers = 0;
+}
+
+// Função para simular o movimento do elevador
+void moveElevator(struct Elevator *elevator) {
+  if (elevator->currentFloor < elevator->destinationFloor) {
+    elevator->currentFloor++;
+    printf("Elevador subindo para o andar %d...\n", elevator->currentFloor);
+  } else if (elevator->currentFloor > elevator->destinationFloor) {
+    elevator->currentFloor--;
+    printf("Elevador descendo para o andar %d...\n", elevator->currentFloor);
+  }
+
+  // Simula o tempo de viagem (em segundos)
+  sleep(1);
+}
+
+// Função para adicionar um passageiro ao elevador
+void addPassenger(struct Elevator *elevator, int floor) {
+  if (elevator->numPassengers < ELEVATOR_CAPACITY) {
+    elevator->passengers[elevator->numPassengers++] = floor;
+    printf("Passageiro adicionado no andar %d.\n", floor);
+  } else {
+    printf("Elevador cheio!\n");
+  }
+}
+
+// Função para remover um passageiro do elevador
+void removePassenger(struct Elevator *elevator, int floor) {
+  for (int i = 0; i < elevator->numPassengers; i++) {
+    if (elevator->passengers[i] == floor) {
+      // Remove o passageiro do array
+      for (int j = i; j < elevator->numPassengers - 1; j++) {
+        elevator->passengers[j] = elevator->passengers[j + 1];
+      }
+      elevator->numPassengers--;
+      printf("Passageiro removido do andar %d.\n", floor);
+      break;
+    }
+  }
+}
+
+int main() {
+  struct Elevator elevator;
+  initializeElevator(&elevator);
+
+  // Loop principal da simulação
+  while (true) {
+    // Imprime o estado atual do elevador
+    printf("\nElevador no andar %d.\n", elevator.currentFloor);
+
+    // Verifica se o elevador está em movimento
+    if (elevator.isMoving) {
+      moveElevator(&elevator);
+
+      // Verifica se o elevador chegou ao destino
+      if (elevator.currentFloor == elevator.destinationFloor) {
+        elevator.isMoving = false;
+        printf("Elevador chegou ao andar %d.\n", elevator.destinationFloor);
+
+        // Remove os passageiros que chegaram ao destino
+        for (int i = 0; i < elevator.numPassengers; i++) {
+          if (elevator.passengers[i] == elevator.destinationFloor) {
+            removePassenger(&elevator, elevator.destinationFloor);
+          }
+        }
+      }
+    } else {
+      // Solicita ao usuário para inserir um comando
+      int command;
+      printf("Digite o comando (1 - Adicionar passageiro, 2 - Mover elevador, 3 - Sair): ");
+      scanf("%d", &command);
+
+      switch (command) {
+        case 1: {
+          int floor;
+          printf("Digite o andar do passageiro: ");
+          scanf("%d", &floor);
+          addPassenger(&elevator, floor);
+          break;
+        }
+        case 2: {
+          int floor;
+          printf("Digite o andar de destino: ");
+          scanf("%d", &floor);
+          elevator.destinationFloor = floor;
+          elevator.isMoving = true;
+          break;
+        }
+        case 3:
+          exit(0);
+        default:
+          printf("Comando inválido.\n");
+          break;
+      }
+    }
+  }
+
+  return 0;
+}
