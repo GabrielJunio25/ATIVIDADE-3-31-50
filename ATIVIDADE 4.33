@@ -1,0 +1,48 @@
+#include <stdio.h>
+
+// Função para ordenar um array usando o algoritmo Insertion Sort
+void insertionSort(int arr[], int n) {
+  int i, key, j;
+  // Itera sobre o array, começando do segundo elemento
+  for (i = 1; i < n; i++) {
+    // Armazena o elemento atual como "key"
+    key = arr[i];
+    // j é o índice do elemento anterior
+    j = i - 1;
+
+    // Move os elementos maiores que "key" para uma posição à frente
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j = j - 1;
+    }
+
+    // Insere "key" na sua posição correta
+    arr[j + 1] = key;
+  }
+}
+
+int main() {
+  // Array de inteiros não ordenado
+  int arr[] = {12, 11, 13, 5, 6};
+  // Tamanho do array
+  int n = sizeof(arr) / sizeof(arr[0]);
+
+  printf("Array original: \n");
+  // Imprime o array original
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  // Ordena o array usando o Insertion Sort
+  insertionSort(arr, n);
+
+  printf("Array ordenado: \n");
+  // Imprime o array ordenado
+  for (int i = 0; i < n; i++) {
+    printf("%d ", arr[i]);
+  }
+  printf("\n");
+
+  return 0;
+}
