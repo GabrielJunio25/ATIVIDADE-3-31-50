@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define BOARD_SIZE 8
+
+// Estrutura para representar a posição do cavalo
+struct Position {
+  int row;
+  int col;
+};
+
+// Função para verificar se uma posição é válida no tabuleiro
+bool isValidPosition(struct Position pos) {
+  return pos.row >= 0 && pos.row < BOARD_SIZE && pos.col >= 0 && pos.col < BOARD_SIZE;
+}
+
+// Função para imprimir o tabuleiro com a posição do cavalo
+void printBoard(struct Position pos) {
+  for (int i = 0; i < BOARD_SIZE; i++) {
+    for (int j = 0; j < BOARD_SIZE; j++) {
+      if (i == pos.row && j == pos.col) {
+        printf("K "); // Imprime 'K' para a posição do cavalo
+      } else {
+        printf(". "); // Imprime '.' para outras posições
+      }
+    }
+    printf("\n");
+  }
+}
+
+// Função para encontrar todas as posições possíveis para o cavalo
+void findPossibleMoves(struct Position pos, struct Position possibleMoves[]) {
+  int moveCount = 0;
+
+  // Define os possíveis movimentos do cavalo
+  int rowOffsets[] = {2, 1, -1, -2, -2, -1, 1, 2};
+  int colOffsets[] = {1, 2, 2, 1, -1, -2, -2, -1};
+
+  for (int i = 0; i < 8; i++) {
+    struct Position newPos;
+    newPos.row = pos.row + rowOffsets[i];
+    newPos.col = pos.col + colOffsets[i];
+
+    if (isValidPosition(newPos)) {
+      possibleMoves[moveCount++] = newPos;
+    }
+  }
+}
+
+int main() {
+  struct Position knightPos;
+  printf("Digite a linha (0-7) e a coluna (0-7) da posição inicial do cavalo: ");
+  scanf("%d %d", &knightPos.row, &knightPos.col);
+
+  // Verifica se a posição inicial é válida
+  if (!isValidPosition(knightPos)) {
+    printf("Posição inválida!\n");
+    return 1;
+  }
+
+  // Cria um array para armazenar as posições possíveis
+  struct Position possibleMoves[BOARD_SIZE * BOARD_SIZE];
+
+  // Encontra as posições possíveis
+  findPossibleMoves(knightPos, possibleMoves);
+
+  // Imprime o tabuleiro com as posições possíveis
+  printf("Movimentos possíveis:\n");
+  printBoard(knightPos);
+  printf("\n");
+
+  for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
+    if (possibleMoves[i].row != -1) {
+      printf("Movimento %d: \n", i + 1);
+      printBoard(possibleMoves[i]);
+      printf("\n");
+    }
+  }
+
+  return 0;
+}
