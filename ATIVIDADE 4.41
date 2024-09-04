@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+// Função para cifrar uma mensagem usando a Cifra de César
+void caesarCipher(char *message, int shift) {
+  int len = strlen(message);
+
+  // Itera sobre cada caractere da mensagem
+  for (int i = 0; i < len; i++) {
+    if (isalpha(message[i])) {
+      // Se o caractere for uma letra, converte para minúsculo
+      char base = islower(message[i]) ? 'a' : 'A';
+      // Aplica a rotação
+      message[i] = base + (message[i] - base + shift) % 26;
+    }
+  }
+}
+
+int main() {
+  char message[100];
+  int shift;
+
+  printf("Digite a mensagem: ");
+  fgets(message, 100, stdin);
+  message[strcspn(message, "\n")] = 0; // Remove o caractere de nova linha
+
+  printf("Digite o valor do deslocamento (1-25): ");
+  scanf("%d", &shift);
+
+  // Cifra a mensagem
+  caesarCipher(message, shift);
+
+  printf("Mensagem cifrada: %s\n", message);
+
+  return 0;
+}
