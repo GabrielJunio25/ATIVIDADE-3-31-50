@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define o tamanho máximo da pilha
+#define MAX_SIZE 100
+
+// Estrutura para representar a pilha
+struct Stack {
+  int items[MAX_SIZE];
+  int top;
+};
+
+// Função para inicializar a pilha
+void initialize(struct Stack *stack) {
+  stack->top = -1;
+}
+
+// Função para verificar se a pilha está vazia
+int isEmpty(struct Stack *stack) {
+  return stack->top == -1;
+}
+
+// Função para verificar se a pilha está cheia
+int isFull(struct Stack *stack) {
+  return stack->top == MAX_SIZE - 1;
+}
+
+// Função para empilhar um elemento
+void push(struct Stack *stack, int item) {
+  if (isFull(stack)) {
+    printf("A pilha está cheia!\n");
+    return;
+  }
+  stack->top++;
+  stack->items[stack->top] = item;
+}
+
+// Função para desempilhar um elemento
+int pop(struct Stack *stack) {
+  if (isEmpty(stack)) {
+    printf("A pilha está vazia!\n");
+    return -1; // Retorna -1 para indicar um erro
+  }
+  int item = stack->items[stack->top];
+  stack->top--;
+  return item;
+}
+
+// Função para visualizar o topo da pilha
+int peek(struct Stack *stack) {
+  if (isEmpty(stack)) {
+    printf("A pilha está vazia!\n");
+    return -1; // Retorna -1 para indicar um erro
+  }
+  return stack->items[stack->top];
+}
+
+int main() {
+  // Cria uma pilha
+  struct Stack stack;
+  initialize(&stack);
+
+  // Empilha alguns elementos
+  push(&stack, 10);
+  push(&stack, 20);
+  push(&stack, 30);
+
+  // Desempilha e exibe os elementos
+  printf("Desempilhando: %d\n", pop(&stack));
+  printf("Desempilhando: %d\n", pop(&stack));
+  printf("O topo da pilha é: %d\n", peek(&stack));
+
+  return 0;
+}
